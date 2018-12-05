@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.UserDao">
+
+
+    <!--resultType必须存在-->
+    <select id="queryUserById" resultType="User">
+        select *,user.name AS userName from tb_user as `user` where id = #{id}
+    </select>
+
+    <!--返回值为list，resultType为其泛型-->
+    <select id="queryAll" resultType="User">
+        select *,user.name AS userName from tb_user as `user`;
+    </select>
+</mapper>
