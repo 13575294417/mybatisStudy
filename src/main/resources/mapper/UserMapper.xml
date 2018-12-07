@@ -1,16 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--名称空间和映射器类必须一致，方法名称和id必须一致-->
 <mapper namespace="com.example.demo.dao.UserDao">
 
 
-    <!--resultType必须存在-->
+    <!--resultType必须存在，和resultMap不能共存-->
     <select id="queryUserById" resultType="User">
         select *,user.name AS userName from tb_user as `user` where id = #{id}
     </select>
 
+
+    <!--resultType必须存在-->
     <!--返回值为list，resultType为其泛型-->
     <select id="queryAll" resultType="User">
         select *,user.name AS userName from tb_user as `user`;
     </select>
+
+
+    <!-- 不需要 resultType -->
+    <!-- useGeneratedKeys:返回自动生成的主键-->
+    <!-- keyProperty:将useGeneratedKeys返回的值设置到该属性-->
+    <!-- keyColumn:如果表中主键不是第一列，设置目标列名-->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+
+        INSERT INTO tb_user (
+        id,
+        user_name,
+        password,
+        name,
+        age,
+        sex,
+        birthday,
+        created,
+        updated
+        )
+        VALUES
+        (
+        NULL,
+        <!-- 这里用#{字段名}，mybatis会自动根据字段名，去User参数中找字段值，设置到Sql中 -->
+        #{userName},
+        #{password},
+        #{name},
+        #{age},
+        #{sex},
+        #{birthday},
+        NOW(),
+        NOW()
+        );
+    </insert>
+
+    <!-- 不需要 resultType -->
+    <update id="updateUser">
+        UPDATE tb_user
+        SET
+        user_name = #{userName},
+        password = #{password},
+        name = #{name},
+        age = #{age},
+        sex = #{sex},
+        birthday = #{birthday},
+        updated = NOW()
+        WHERE
+        id = #{id};
+	</update>
+
+    <!-- 不需要 resultType -->
+    <delete id="deleteUserById">
+		DELETE FROM tb_user WHERE id = #{id}
+	</delete>
+
+    <select id="queryUserByUsernameAndPassword" resultMap="userResultMap">
+        <!--在不能识别参数名称的情况下，通过在接口使用@Param注解，使得此处能够利用键名来获取value-->
+        SELECT <include refid="userColumns"/> FROM tb_user WHERE user_name = #{userName} AND password = #{password}
+    </select>
+
+    <!--解决列名和对象属性名不一致的问题-->
+    <!--autoMapping默认为true，如果设置为false，则必须每个属性都要用result/id映射，即使名称相同-->
+    <resultMap id="userResultMap" type="User" autoMapping="true">
+
+        <!--指定id能够提高映射效率-->
+        <id property="id" column="id"/>
+
+        <!--如果在yml文件中开启了驼峰映射，就不需要用result再手动映射-->
+        <!--<result property="userName" column="user_name"/>-->
+
+    </resultMap>
+
+
+    <sql id="userColumns">
+        id,user_name,password,name,age,sex,birthday,created,updated
+    </sql>
+
+
+    <select id="queryMaleUserByName" resultMap="userResultMap">
+        select <include refid="userColumns"/> 
+        from tb_user
+        where sex = '1'
+        <if test="name != null and name.trim() != ''">
+            and name like CONCAT('%',#{name},'%');
+        </if>
+    </select>
+
 </mapper>
+

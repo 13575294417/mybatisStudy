@@ -5,5 +5,7 @@ spring:
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
 mybatis:
-  mapper-locations: classpath:mapper/*Mapper.xml
-  type-aliases-package: com.example.demo.entity
+  mapper-locations: classpath:mapper/*Mapper.xml    # mapper文件的位置
+  type-aliases-package: com.example.demo.entity     # 别名扫描包
+  configuration:
+    map-underscore-to-camel-case: true              # 开启驼峰映射

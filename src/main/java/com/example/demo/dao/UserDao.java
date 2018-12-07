@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import com.example.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -34,4 +35,18 @@ public interface UserDao {
      */
     void deleteUserById(Long id);
 
+    /**
+     * 根据用户名和密码来查找用户
+     * @param username
+     * @param password
+     * @return
+     */
+    User queryUserByUsernameAndPassword(@Param("userName") String username, @Param("password") String password);
+
+    /**
+     * 查询男性用户，如果输入了姓名，则按照姓名模糊查找
+     * @param name
+     * @return
+     */
+    List<User> queryMaleUserByName(@Param("name") String name);
 }
