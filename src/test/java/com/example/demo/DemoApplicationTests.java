@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -78,6 +79,45 @@ public class DemoApplicationTests {
     public void queryMaleUserByName() {
         List<User> users = userDAO.queryMaleUserByName("三");
 
+        for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
+            User user = iterator.next();
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void queryAllUserAndSort() {
+        List<User> users = userDAO.queryAllUserAndSort(2);
+        for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
+            User user =  iterator.next();
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void queryUserByNameAndAge() {
+        List<User> users = userDAO.queryUserByNameAndAge(null, null);
+        for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
+            User user =  iterator.next();
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void update() {
+        User user = new User();
+        user.setId(null);
+        user.setAge(19);
+        user.setName(null);
+        int update = userDAO.update(user);
+        System.out.println(update);
+    }
+
+    @Test
+    public void queryUserByIds() {
+        List<Long> ids = new ArrayList<>();
+//        ids.add(1L);
+        List<User> users = userDAO.queryUserByIds(ids);
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
             User user = iterator.next();
             System.out.println(user);

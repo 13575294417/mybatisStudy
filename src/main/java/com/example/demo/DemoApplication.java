@@ -14,7 +14,7 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class,args);
     }
 
-    private final CityMapper cityMapper;
+    /*private final CityMapper cityMapper;
 
     public DemoApplication(CityMapper cityMapper) {
         this.cityMapper = cityMapper;
@@ -23,5 +23,5 @@ public class DemoApplication {
     @Bean
     CommandLineRunner haha() {
         return haha -> System.out.println(this.cityMapper.findByState("CA"));
-    }
+    }*/
 }

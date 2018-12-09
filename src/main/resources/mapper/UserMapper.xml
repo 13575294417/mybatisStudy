@@ -6,6 +6,13 @@
 <mapper namespace="com.example.demo.dao.UserDao">
 
 
+
+
+
+
+
+    <!--基础-->
+
     <!--resultType必须存在，和resultMap不能共存-->
     <select id="queryUserById" resultType="User">
         select *,user.name AS userName from tb_user as `user` where id = #{id}
@@ -71,9 +78,21 @@
 		DELETE FROM tb_user WHERE id = #{id}
 	</delete>
 
+
+
+
+
+
+
+
+
+    <!--映射-->
+
     <select id="queryUserByUsernameAndPassword" resultMap="userResultMap">
         <!--在不能识别参数名称的情况下，通过在接口使用@Param注解，使得此处能够利用键名来获取value-->
-        SELECT <include refid="userColumns"/> FROM tb_user WHERE user_name = #{userName} AND password = #{password}
+        SELECT
+        <include refid="userColumns"/>
+        FROM tb_user WHERE user_name = #{userName} AND password = #{password}
     </select>
 
     <!--解决列名和对象属性名不一致的问题-->
@@ -90,12 +109,22 @@
 
 
     <sql id="userColumns">
-        id,user_name,password,name,age,sex,birthday,created,updated
+        id,user_name,password,name,age,sex,birthday,created,updated,note
     </sql>
 
 
+
+
+
+
+
+
+
+    <!--动态标签-->
+
     <select id="queryMaleUserByName" resultMap="userResultMap">
-        select <include refid="userColumns"/> 
+        select
+        <include refid="userColumns"/>
         from tb_user
         where sex = '1'
         <if test="name != null and name.trim() != ''">
@@ -103,5 +132,69 @@
         </if>
     </select>
 
+    <select id="queryAllUserAndSort" resultType="User">
+        SELECT
+        <include refid="userColumns"/>
+        FROM tb_user
+        <choose>
+            <when test="orderType == 0">
+              ORDER BY age ASC
+            </when>
+            <when test="orderType == 1">
+              ORDER BY age DESC
+            </when>
+            <otherwise>
+              ORDER BY id ASC
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="queryUserByNameAndAge" resultType="User">
+        SELECT <include refid="userColumns"/>
+        FROM tb_user
+        <where> <!--where标签去掉多余的AND,没有条件去掉where-->
+            <if test="name != null and name.trim() != ''">
+                AND name like CONCAT("%",#{name},"%")
+            </if>
+            <if test="age != null">
+                <!--小于号要做变换，-->
+                AND age &lt; #{age}
+            </if>
+        </where>
+    </select>
+
+
+    <!--增删改操作，如果dao的返回值为int，成功就返回影响的行数-->
+    <update id="update">
+        UPDATE tb_user
+        <!--set标签去除多余的","-->
+        <set>
+            <if test="name != null and name.trim() != ''">
+                name = #{name},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+        </set>
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <select id="queryUserByIds" resultType="User">
+        SELECT <include refid="userColumns"/>
+        FROM tb_user
+        <!--where标签中为null，去掉where-->
+        <where>
+            <!--test中可以使用大于等于，而不需要转义-->
+            <if test="ids != null and ids.size() > 0">
+                <foreach collection="ids" open="id in (" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>
 
