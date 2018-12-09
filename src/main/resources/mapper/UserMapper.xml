@@ -148,7 +148,7 @@
             </otherwise>
         </choose>
     </select>
-    
+
     <select id="queryUserByNameAndAge" resultType="User">
         SELECT <include refid="userColumns"/>
         FROM tb_user
@@ -196,5 +196,39 @@
             </if>
         </where>
     </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--一对多查询-->
+    <!--如果联合查询中，多个列同名，比如order、user表中都有id，mybatis会拿第一个id做映射，
+        如果第一个id是User的id，同样也会映射到Order的id上，这里要注意-->
+    <select id="queryOrderAndNumberByOrderNumber" resultMap="orderUserResult">
+        SELECT o.*,u.*
+        FROM tb_order o
+        LEFT JOIN tb_user u ON o.user_id = u.id
+        WHERE o.order_number = #{orderNumber}
+    </select>
+
+    <!--autoMapping保证名称一样的列和属性能够自动映射-->
+    <resultMap id="orderUserResult" type="Order" autoMapping="true">
+        <id column="id" property="id"/>
+        <!--autoMapping保证名称一样的列和属性能够自动映射-->
+        <!--属性中有对象类型，用association做映射-->
+        <association property="user" javaType="User" autoMapping="true">
+            <!--这里如果映射列id，那么会选择第一个id列，也就是order的id，是错误的-->
+            <id property="id" column="user_id"/>
+        </association>
+    </resultMap>
+
 </mapper>
 

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.dao.UserDao;
+import com.example.demo.entity.Order;
 import com.example.demo.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,6 +123,12 @@ public class DemoApplicationTests {
             User user = iterator.next();
             System.out.println(user);
         }
+    }
+
+    @Test
+    public void queryOrderAndNumberByOrderNumber() {
+        Order order = userDAO.queryOrderAndNumberByOrderNumber("20140921003");
+        System.out.println(order);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import com.example.demo.entity.Order;
 import com.example.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -78,4 +79,11 @@ public interface UserDao {
      * @return
      */
     List<User> queryUserByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 查询订单的同时，查询出订单所属用户
+     * @param orderNumber
+     * @return
+     */
+    Order queryOrderAndNumberByOrderNumber(String orderNumber);
 }
