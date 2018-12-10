@@ -130,6 +130,24 @@ public class DemoApplicationTests {
         Order order = userDAO.queryOrderAndNumberByOrderNumber("20140921003");
         System.out.println(order);
     }
+
+    @Test
+    public void queryOrderWithUserAndOrderDetailByOrderNumber() {
+        Order order = userDAO.queryOrderWithUserAndOrderDetailByOrderNumber("20140921003");
+        System.out.println(order);
+    }
+
+    @Test
+    public void queryOrderWithUserAndOrderDetailsAndItemByOrderNumber() {
+        Order order = userDAO.queryOrderWithUserAndOrderDetailsAndItemByOrderNumber("20140921003");
+        System.out.println(order);
+    }
+
+    @Test
+    public void queryBySelect() {
+        Order order = userDAO.queryBySelect("20140921003");
+        System.out.println(order);
+    }
 }
 
 

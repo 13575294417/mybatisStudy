@@ -6,6 +6,7 @@ public class OrderDetail implements Serializable {
     private Integer id;
     private Double totalPrice;
     private Integer status;
+    private Item item;
 
     @Override
     public String toString() {
@@ -13,7 +14,16 @@ public class OrderDetail implements Serializable {
                 "id=" + id +
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
+                ", item=" + item +
                 '}';
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public Integer getId() {

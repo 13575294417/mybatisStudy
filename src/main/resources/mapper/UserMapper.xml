@@ -2,8 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--名称空间和映射器类必须一致，方法名称和id必须一致-->
+<!--名称空间和映射器类必须一致，方法名称和id必须一致
+    映射器类上加@Mapper注解，使其能够被扫描
+    yml文件指定mapper-locations路径，解析指定Mapper.xml，通过名称空间匹配对应的映射器类-->
 <mapper namespace="com.example.demo.dao.UserDao">
+
+
+
+
 
 
 
@@ -86,6 +92,13 @@
 
 
 
+
+
+
+
+
+
+
     <!--映射-->
 
     <select id="queryUserByUsernameAndPassword" resultMap="userResultMap">
@@ -111,6 +124,12 @@
     <sql id="userColumns">
         id,user_name,password,name,age,sex,birthday,created,updated,note
     </sql>
+
+
+
+
+
+
 
 
 
@@ -209,6 +228,11 @@
 
 
 
+
+
+
+
+
     <!--一对多查询-->
     <!--如果联合查询中，多个列同名，比如order、user表中都有id，mybatis会拿第一个id做映射，
         如果第一个id是User的id，同样也会映射到Order的id上，这里要注意-->
@@ -222,13 +246,93 @@
     <!--autoMapping保证名称一样的列和属性能够自动映射-->
     <resultMap id="orderUserResult" type="Order" autoMapping="true">
         <id column="id" property="id"/>
-        <!--autoMapping保证名称一样的列和属性能够自动映射-->
         <!--属性中有对象类型，用association做映射-->
+        <!--autoMapping保证名称一样的列和属性能够自动映射-->
+        <!--property:子对象在父对象中的字段名称
+            javaType:子对象的数据类型-->
         <association property="user" javaType="User" autoMapping="true">
             <!--这里如果映射列id，那么会选择第一个id列，也就是order的id，是错误的-->
             <id property="id" column="user_id"/>
         </association>
     </resultMap>
 
+
+    <select id="queryOrderWithUserAndOrderDetailByOrderNumber" resultMap="orderUserOrderDetailResult">
+        <!--此处必须指定orderDetailId，因为主表中没有订单详情的id别名，而联合表中订单详情的id和其他表的id同名，
+            直接用id会映射错-->
+        select o.*,u.*,od.*,od.id as orderDetailId
+        from tb_order o
+        left join tb_user u on o.user_id = u.id
+        left join tb_order_detail od on o.id = od.order_id
+        where o.order_number = #{orderNumber}
+    </select>
+
+    <!--extends:继承指定resultMap标签中的内容，注意是标签中的内容
+                对于resultMap上的属性，id和type是必须的，如果不设置autoMapping属性，order的基础类型字段，除了继承过来的id外，就不能映射-->
+    <resultMap id="orderUserOrderDetailResult" extends="orderUserResult" type="Order" autoMapping="true">
+        <!--autoMapping保证名称一样的列和属性能够自动映射-->
+        <!--ofType:子对象中集合内的元素类型-->
+        <collection property="orderDetails" javaType="List" ofType="OrderDetail" autoMapping="true">
+            <!--映射指定了别名的订单详情id列，不会存在映射错的情况-->
+            <id column="orderDetailId" property="id"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryOrderWithUserAndOrderDetailsAndItemByOrderNumber" resultMap="orderUserOrderDetailAndItemResult">
+        <!--这里itemId可以从订单详情中得到，并且不会出现同名列的情况，所以不需要使用别名-->
+        select o.*,u.*,od.*,i.*,od.id as orderDetailId
+        from tb_order o left join tb_user u on o.user_id = u.id
+        left join tb_order_detail od on o.id = od.order_id
+        left join tb_item i on od.item_id = i.id
+        where o.order_number = #{orderNumber}
+    </select>
+
+    <resultMap id="orderUserOrderDetailAndItemResult" type="Order" autoMapping="true" extends="orderUserResult">
+        <collection property="orderDetails" javaType="List" ofType="OrderDetail" autoMapping="true">
+            <id column="orderDetailId" property="id"/>
+            <association property="item" javaType="Item" autoMapping="true">
+                <id property="id" column="item_id"/>
+            </association>
+        </collection>
+    </resultMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--嵌套select语句-->
+    <select id="queryBySelect" resultMap="orderUserSelectResult">
+        SELECT o.*
+        FROM tb_order o
+        WHERE o.order_number = #{orderNumber}
+    </select>
+
+    <resultMap id="orderUserSelectResult"  autoMapping="true" type="Order">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <!--使用column，会将联合表中的列提取出来，如果不手动映射订单中的userId属性，将为null-->
+        <!--提取出来的column会做为select的参数使用,参数名随意-->
+        <!--javaType可写可不写-->
+        <!--autoMapping可写可不写-->
+        <association property="user" javaType="User" autoMapping="true" select="selectUser" column="user_id"/>
+    </resultMap>
+
+    <select id="selectUser" resultType="User">
+        select * from tb_user where id = #{haha}
+    </select>
 </mapper>
 

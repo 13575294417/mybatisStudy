@@ -85,5 +85,26 @@ public interface UserDao {
      * @param orderNumber
      * @return
      */
-    Order queryOrderAndNumberByOrderNumber(String orderNumber);
+    Order queryOrderAndNumberByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    /**
+     * 查询订单，并且查询出所有订单详情及所属用户
+     * @param orderNumber
+     * @return
+     */
+    Order queryOrderWithUserAndOrderDetailByOrderNumber(@Param("orderNumber") String orderNumber);
+
+    /**
+     * 查询订单，查询出所属用户，并且查询出订单的详情，及订单详情中的对应的商品
+     * @param orderDetailId
+     * @return
+     */
+    Order queryOrderWithUserAndOrderDetailsAndItemByOrderNumber(@Param("orderNumber") String orderDetailId);
+
+    /**
+     * 通过select嵌套，查询订单的同时，查询出订单所属用户
+     * @param orderNumber
+     * @return
+     */
+    Order queryBySelect(@Param("orderNumber") String orderNumber);
 }

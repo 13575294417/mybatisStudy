@@ -1,12 +1,14 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Order implements Serializable {
     private Integer id;
     private Long userId;
     private String orderNumber;
     private User user;
+    private List<OrderDetail> orderDetails;
 
     @Override
     public String toString() {
@@ -15,7 +17,16 @@ public class Order implements Serializable {
                 ", userId=" + userId +
                 ", orderNumber='" + orderNumber + '\'' +
                 ", user=" + user +
+                ", orderDetails=" + orderDetails +
                 '}';
+    }
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     public User getUser() {
