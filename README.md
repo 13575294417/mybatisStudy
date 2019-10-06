@@ -1,5 +1,9 @@
 # mybatisStudy
-对mybatis一些标签进行总结，供以后复习
+对mybatis一些标签进行总结，供以后复习   
+报错The server time zone问题解决：     
+https://www.cnblogs.com/JohnTeslaaa/p/10334679.html  
+useUnicode=true&characterEncoding=UTF-8的作用:  
+https://blog.csdn.net/qq_33229669/article/details/82227213
 
 # 建表语句
 ```mysql
