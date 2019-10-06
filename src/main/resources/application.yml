@@ -9,3 +9,6 @@ mybatis:
   type-aliases-package: com.example.demo.entity     # 别名扫描包
   configuration:
     map-underscore-to-camel-case: true              # 开启驼峰映射
+logging:
+  level:
+    com.example.demo.dao : debug                    # 打印sql语句日志

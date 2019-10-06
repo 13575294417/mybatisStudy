@@ -51,7 +51,8 @@ public class DemoApplicationTests {
         // 插入用户
         userDAO.insertUser(user);
         System.out.println(user);
-;    }
+        ;
+    }
 
     @Test
     public void testUpdateUser() {
@@ -90,7 +91,7 @@ public class DemoApplicationTests {
     public void queryAllUserAndSort() {
         List<User> users = userDAO.queryAllUserAndSort(2);
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
-            User user =  iterator.next();
+            User user = iterator.next();
             System.out.println(user);
         }
     }
@@ -99,7 +100,7 @@ public class DemoApplicationTests {
     public void queryUserByNameAndAge() {
         List<User> users = userDAO.queryUserByNameAndAge(null, null);
         for (Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
-            User user =  iterator.next();
+            User user = iterator.next();
             System.out.println(user);
         }
     }
@@ -147,6 +148,30 @@ public class DemoApplicationTests {
     public void queryBySelect() {
         Order order = userDAO.queryBySelect("20140921003");
         System.out.println(order);
+    }
+
+    @Test
+    public void batchUpdate() {
+        List<User> list = new ArrayList<>();
+        User a = new User();
+        User b = new User();
+        User c = new User();
+        User d= new User();
+        list.add(a);
+        list.add(b);
+        list.add(c);
+        list.add(d);
+        a.setId(1L);
+        b.setId(2L);
+        c.setId(3L);
+        d.setId(4L);
+        a.setUserName("zhangsan5");
+//        b.setUserName("lisi5");
+        c.setUserName("wangwu5");
+        a.setAge(5);
+        b.setAge(5);
+//        c.setAge(5);
+        userDAO.batchUpdate(list);
     }
 }
 

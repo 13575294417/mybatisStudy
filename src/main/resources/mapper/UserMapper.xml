@@ -334,5 +334,49 @@
     <select id="selectUser" resultType="User">
         select * from tb_user where id = #{haha}
     </select>
+
+
+
+
+
+
+
+
+
+
+
+    <!--批量修改用户sql语句-->
+    <update id="batchUpdate">
+        update tb_user
+        <set>
+            updated = now(),
+            <trim prefix="user_name = case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.userName !=null and item.userName != ''">
+                        when id = #{item.id} then #{item.userName}
+                    </if>
+                    <if test="item.userName ==null or item.userName == ''">
+                        <!-- 此处如果没有，上面条件不满足，那么user_name字段会默认置空 -->
+                        when id = #{item.id} then user_name
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="age = case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.age !=null">
+                        when id = #{item.id} then #{item.age}
+                    </if>
+                    <if test="item.age ==null">
+                        when id = #{item.id} then age
+                    </if>
+                </foreach>
+            </trim>
+
+        </set>
+        where id in
+        <foreach collection="list" item="user" separator="," open="(" close=")">
+            #{user.id}
+        </foreach>
+    </update>
 </mapper>
 

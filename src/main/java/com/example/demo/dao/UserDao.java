@@ -107,4 +107,10 @@ public interface UserDao {
      * @return
      */
     Order queryBySelect(@Param("orderNumber") String orderNumber);
+
+    /**
+     * 批量修改用户sql语句
+     * @param list
+     */
+    void batchUpdate(@Param("list") List<User> list);
 }
